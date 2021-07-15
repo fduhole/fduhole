@@ -102,7 +102,7 @@ class RegisterView(APIView):
                 with open('conf/email.txt', 'a+') as f:
                     f.write(email + ' ')
 
-                email = make_password(email)
+                # email = make_password(email)
                 password = random_str(16)
                 user = User.objects.create_user(username=username, password=password)
                 user.groups.add(1)
@@ -142,7 +142,7 @@ class RegisterView(APIView):
 
             with open('conf/email.txt', 'a+') as f:
                 f.write(email + ' ')
-            email = make_password(email)
+            # email = make_password(email)
             user = User.objects.create_user(username=username, password=password)
             user.groups.add(1)
             user.save()
@@ -491,7 +491,7 @@ class EmailView(APIView):
         email = request.data.get('email')
 
         if profile.has_input_email : return Response({}, status=status.HTTP_400_BAD_REQUEST)
-        if not check_password(email, profile.encrypted_email): return Response({}, status=status.HTTP_400_BAD_REQUEST)
+        if not (email == profile.encrypted_email or check_password(email, profile.encrypted_email)): return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
         profile.has_input_email = True
         profile.save()
